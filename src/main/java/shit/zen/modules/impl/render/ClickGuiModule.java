@@ -1,6 +1,5 @@
 package shit.zen.modules.impl.render;
 
-import net.minecraft.client.gui.screens.Screen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import shit.zen.gui.NewClickGui;
@@ -25,7 +24,7 @@ extends Module {
             if (this.styleSetting.is("Old")) {
                 mc.setScreen(new OldClickGui());
             } else if (this.styleSetting.is("Panel")) {
-                mc.setScreen(PanelClickGui.Đ);
+                mc.setScreen(PanelClickGui.panelClickGui);
             } else {
                 mc.setScreen(new NewClickGui());
             }

@@ -295,10 +295,9 @@ public class OpalNameTag extends NameTagStyle {
         if (last != null && now - last < 1000L) {
             return this.decodedNameCache.get(name);
         }
-        String decoded = ZenClient.decodeString(name);
-        this.decodedNameCache.put(name, decoded);
+        this.decodedNameCache.put(name, name);
         this.nameDecodeTimestamps.put(name, now);
-        return decoded;
+        return name;
     }
 
     private record ItemRenderData(ItemStack itemStack, Vector2f position) {

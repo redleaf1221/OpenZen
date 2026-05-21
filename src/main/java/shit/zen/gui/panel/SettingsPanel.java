@@ -2,15 +2,13 @@ package shit.zen.gui.panel;
 
 import java.awt.Color;
 import java.util.List;
-import java.util.function.Consumer;
+
 import net.minecraft.client.gui.GuiGraphics;
 import shit.zen.ClientBase;
 import shit.zen.gui.PanelClickGui;
-import shit.zen.gui.panel.SettingsPanel.AnimationState;
 import shit.zen.gui.panel.setting.SettingRenderer;
 import shit.zen.gui.panel.setting.SettingRendererRegistry;
 import shit.zen.modules.Module;
-import shit.zen.render.DrawContext;
 import shit.zen.render.FontPresets;
 import shit.zen.render.FontRenderer;
 import shit.zen.render.GlHelper;
@@ -393,7 +391,7 @@ extends ClientBase {
         if (n5 == 0 && n3 >= n18 && n3 <= n18 + n16 * 2 && n4 >= n19 && n4 <= n19 + n16) {
             this.currentModule.toggle();
             String string = this.currentModule.isEnabled() ? "On" : "Off";
-            PanelClickGui.Đ.addToast(this.currentModule.getName() + " Module " + string);
+            PanelClickGui.panelClickGui.addToast(this.currentModule.getName() + " Module " + string);
             return true;
         }
         List<Setting<?>> list = this.currentModule.getSettings();

@@ -1,109 +1,103 @@
 package shit.zen.render;
 
-import shit.zen.render.CustomFont;
-import shit.zen.render.FontMetricsImpl;
-import shit.zen.render.Fonts;
-import shit.zen.render.GlyphMetrics;
-import shit.zen.render.Path;
-import shit.zen.render.Rectangle;
+import lombok.Getter;
 
 public final class FontRenderer {
+    @Getter
     private final String fontName;
+    @Getter
     private final float size;
     private CustomFont customFont;
 
-    public FontRenderer(String string, float f) {
-        this.fontName = string;
-        this.size = f;
+    public FontRenderer(String var1, float var2) {
+        this.fontName = var1;
+        this.size = var2;
     }
 
-    public FontRenderer(CustomFont customFont, float f) {
+    public FontRenderer(CustomFont var1, float var2) {
         this.fontName = null;
-        this.size = f;
-        this.customFont = customFont;
-    }
-
-    public String getFontName() {
-        return this.fontName;
-    }
-
-    public float getSize() {
-        return this.size;
+        this.size = var2;
+        this.customFont = var1;
     }
 
     public CustomFont getFont() {
         if (this.customFont == null && this.fontName != null) {
             this.customFont = Fonts.getCustomFont(this.fontName, this.size);
         }
+
         return this.customFont;
     }
 
     public int getId() {
-        CustomFont customFont = this.getFont();
-        return customFont == null ? 0 : System.identityHashCode(customFont);
+        CustomFont var3 = this.getFont();
+        return var3 == null ? 0 : System.identityHashCode(var3);
     }
 
     public int getHeight() {
         return this.getId();
     }
 
-    public FontRenderer withBold(boolean bl) {
+    public FontRenderer withBold(boolean var1) {
         return this;
     }
 
-    public FontRenderer withItalic(boolean bl) {
+    public FontRenderer withItalic(boolean var1) {
         return this;
     }
 
-    public FontRenderer withColor(Object object) {
+    public FontRenderer withColor(Object var1) {
         return this;
     }
 
-    public Rectangle getBounds(String string) {
-        if (string == null || string.isEmpty()) {
-            return Rectangle.ofXYWH(0.0f, 0.0f, 0.0f, 0.0f);
+    public Rectangle getBounds(String var1) {
+        if (var1 != null && !var1.isEmpty()) {
+            CustomFont var4 = this.getFont();
+            if (var4 == null) {
+                return Rectangle.ofXYWH(0.0F, 0.0F, 0.0F, 0.0F);
+            } else {
+                float var5 = var4.getStringWidth(var1);
+                float var6 = var4.getStringHeight(var1);
+                return Rectangle.ofXYWH(0.0F, 0.0F, var5, var6);
+            }
+        } else {
+            return Rectangle.ofXYWH(0.0F, 0.0F, 0.0F, 0.0F);
         }
-        CustomFont customFont = this.getFont();
-        if (customFont == null) {
-            return Rectangle.ofXYWH(0.0f, 0.0f, 0.0f, 0.0f);
-        }
-        float f = customFont.getStringWidth(string);
-        float f2 = customFont.getStringHeight(string);
-        return Rectangle.ofXYWH(0.0f, 0.0f, f, f2);
     }
 
-    public float getWidth(String string) {
-        if (string == null || string.isEmpty()) {
-            return 0.0f;
+    public float getWidth(String var1) {
+        if (var1 != null && !var1.isEmpty()) {
+            CustomFont var4 = this.getFont();
+            return var4 == null ? 0.0F : var4.getStringWidth(var1);
+        } else {
+            return 0.0F;
         }
-        CustomFont customFont = this.getFont();
-        return customFont == null ? 0.0f : customFont.getStringWidth(string);
     }
 
-    public short[] getGlyphCodes(String string) {
+    public short[] getGlyphCodes(String var1) {
         return new short[0];
     }
 
-    public Path getGlyphPath(short s) {
+    public Path getGlyphPath(short var1) {
         return null;
     }
 
     public GlyphMetrics getMetrics() {
-        CustomFont customFont = this.getFont();
-        if (customFont == null) {
-            return new GlyphMetrics(-this.size * 0.8f, this.size * 0.2f, this.size * 1.2f, this.size * 0.7f);
+        CustomFont var3 = this.getFont();
+        if (var3 == null) {
+            return new GlyphMetrics(-this.size * 0.8F, this.size * 0.2F, this.size * 1.2F, this.size * 0.7F);
+        } else {
+            FontMetricsImpl var4 = var3.getFontMetrics();
+            int var5 = var3.getScale();
+            if (var5 <= 0) {
+                var5 = 1;
+            }
+
+            float var6 = -var4.getAscent() / var5;
+            float var7 = (float)var4.getDescent() / var5;
+            float var8 = (float)var4.getLeading() / var5;
+            float var9 = (float)var4.getHeight() / var5;
+            float var10 = var4.getAscent() * 0.7F / var5;
+            return new GlyphMetrics(var6, var7, var9, var10);
         }
-        FontMetricsImpl fontMetricsImpl = customFont.getFontMetrics();
-        int n = customFont.getScale();
-        if (n <= 0) {
-            n = 1;
-        }
-        float f = -((float)fontMetricsImpl.getAscent()) / (float)n;
-        float f2 = (float)fontMetricsImpl.getDescent() / (float)n;
-        float f3 = (float)fontMetricsImpl.getLeading() / (float)n;
-        float f4 = (float)fontMetricsImpl.getHeight() / (float)n;
-        float f5 = (float)fontMetricsImpl.getAscent() * 0.7f / (float)n;
-        GlyphMetrics glyphMetrics = new GlyphMetrics(f, f2, f4, f5);
-        return glyphMetrics;
     }
 }

@@ -8,13 +8,12 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import it.unimi.dsi.fastutil.chars.Char2IntArrayMap;
 import it.unimi.dsi.fastutil.chars.Char2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
+import it.unimi.dsi.fastutil.objects.*;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.io.Closeable;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
@@ -191,105 +190,102 @@ implements Closeable {
     public void drawStringRGB(PoseStack poseStack, String string, float f, float f2, float f3, float f4, float f5, float f6) {
         this.drawStringRGBFull(poseStack, string, f, f2, f3, f4, f5, f6, false, 0);
     }
-
-    /*
-     * WARNING - Removed try catching itself - possible behaviour change.
-     */
-    public void drawStringRGBFull(PoseStack poseStack, String string, float f, float f2, float f3, float f4, float f5, float f6, boolean bl, int n) {
+    public void drawStringRGBFull(PoseStack var1, String var2, float var3, float var4, float var5, float var6, float var7, float var8, boolean var9, int var10) {
         if (this.preloadFuture != null && !this.preloadFuture.isDone()) {
             try {
                 this.preloadFuture.get();
-            } catch (InterruptedException | ExecutionException throwable) {
-                // empty catch block
+            } catch (ExecutionException | InterruptedException var44) {
             }
         }
+
         this.checkGuiScaleChanged();
-        float f7 = f3;
-        float f8 = f4;
-        float f9 = f5;
-        poseStack.pushPose();
-        poseStack.translate(MathUtil.round(f, 1), MathUtil.round(f2 -= 1.0f, 1), 0.0);
-        poseStack.scale(1.0f / (float)this.scale, 1.0f / (float)this.scale, 1.0f);
+        float var13 = var5;
+        float var14 = var6;
+        float var15 = var7;
+        var1.pushPose();
+        var1.translate(MathUtil.round(var3, 1), MathUtil.round(--var4, 1), 0.0);
+        var1.scale(1.0F / this.scale, 1.0F / this.scale, 1.0F);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableCull();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-        Matrix4f matrix4f = poseStack.last().pose();
-        char[] cArray = string.toCharArray();
-        float f10 = 0.0f;
-        float f11 = 0.0f;
-        boolean bl2 = false;
-        int n2 = 0;
-        Object2ObjectMap<ResourceLocation, ObjectList<CustomFont.GlyphEntry>> object2ObjectMap = this.glyphPageMap;
-        synchronized (object2ObjectMap) {
-            for (int i = 0; i < cArray.length; ++i) {
-                char c = cArray[i];
-                if (bl2) {
-                    bl2 = false;
-                    char c2 = Character.toUpperCase(c);
-                    if (MC_COLOR_CODES.containsKey(c2)) {
-                        int n3 = MC_COLOR_CODES.get(c2);
-                        int[] rgb = CustomFont.colorToRGB(n3);
-                        f7 = rgb[0] / 255.0f;
-                        f8 = rgb[1] / 255.0f;
-                        f9 = rgb[2] / 255.0f;
-                        continue;
+        Matrix4f var16 = var1.last().pose();
+        char[] var17 = var2.toCharArray();
+        float var18 = 0.0F;
+        float var19 = 0.0F;
+        boolean var20 = false;
+        int var21 = 0;
+        synchronized (this.glyphPageMap) {
+            for (int var23 = 0; var23 < var17.length; var23++) {
+                char var24 = var17[var23];
+                if (var20) {
+                    var20 = false;
+                    char var25 = Character.toUpperCase(var24);
+                    if (MC_COLOR_CODES.containsKey(var25)) {
+                        int var26 = MC_COLOR_CODES.get(var25);
+                        int[] var27 = colorToRGB(var26);
+                        var13 = var27[0] / 255.0F;
+                        var14 = var27[1] / 255.0F;
+                        var15 = var27[2] / 255.0F;
+                    } else if (var25 == 'R') {
+                        var13 = var5;
+                        var14 = var6;
+                        var15 = var7;
                     }
-                    if (c2 != 'R') continue;
-                    f7 = f3;
-                    f8 = f4;
-                    f9 = f5;
-                    continue;
+                } else if (var24 == 167) {
+                    var20 = true;
+                } else if (var24 == '\n') {
+                    var19 += this.getStringHeight(var2.substring(var21, var23)) * this.scale;
+                    var18 = 0.0F;
+                    var21 = var23 + 1;
+                } else {
+                    Glyph var49 = this.getOrLoadGlyph(var24);
+                    if (var49 != null) {
+                        if (var49.value() != ' ') {
+                            ResourceLocation var51 = var49.owner().textureLocation;
+                            GlyphEntry var53 = new GlyphEntry(var18, var19, var13, var14, var15, var49);
+                            this.glyphPageMap.computeIfAbsent(var51, var0 -> new ObjectArrayList<>()).add(var53);
+                        }
+
+                        var18 += var49.width() + this.letterSpacing;
+                    }
                 }
-                if (c == '§') {
-                    bl2 = true;
-                    continue;
-                }
-                if (c == '\n') {
-                    f11 += this.getStringHeight(string.substring(n2, i)) * (float)this.scale;
-                    f10 = 0.0f;
-                    n2 = i + 1;
-                    continue;
-                }
-                Glyph glyph = this.getOrLoadGlyph(c);
-                if (glyph == null) continue;
-                if (glyph.value() != ' ') {
-                    ResourceLocation resourceLocation = glyph.owner().textureLocation;
-                    CustomFont.GlyphEntry entry = new CustomFont.GlyphEntry(f10, f11, f7, f8, f9, glyph);
-                    this.glyphPageMap.computeIfAbsent(resourceLocation, k -> new ObjectArrayList<>()).add(entry);
-                }
-                f10 += (float)glyph.width() + this.letterSpacing;
             }
-            for (ResourceLocation resourceLocation : this.glyphPageMap.keySet()) {
-                RenderSystem.setShaderTexture(0, resourceLocation);
-                ObjectList<CustomFont.GlyphEntry> list = this.glyphPageMap.get(resourceLocation);
-                Tesselator tesselator = Tesselator.getInstance();
-                BufferBuilder bufferBuilder = tesselator.getBuilder();
-                bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
-                for (CustomFont.GlyphEntry customFont$GlyphEntry : list) {
-                    float f12 = customFont$GlyphEntry.atX;
-                    float f13 = customFont$GlyphEntry.atY;
-                    float f14 = customFont$GlyphEntry.r;
-                    float f15 = customFont$GlyphEntry.g;
-                    float f16 = customFont$GlyphEntry.b;
-                    Glyph glyph = customFont$GlyphEntry.toDraw;
-                    GlyphPage glyphPage = glyph.owner();
-                    float f17 = glyph.width();
-                    float f18 = glyph.height();
-                    float f19 = (float)glyph.u() / (float)glyphPage.imageWidth;
-                    float f20 = (float)glyph.v() / (float)glyphPage.imageHeight;
-                    float f21 = (float)(glyph.u() + glyph.width()) / (float)glyphPage.imageWidth;
-                    float f22 = (float)(glyph.v() + glyph.height()) / (float)glyphPage.imageHeight;
-                    bufferBuilder.vertex(matrix4f, f12 + 0.0f, f13 + f18, 0.0f).uv(f19, f22).color(f14, f15, f16, f6).endVertex();
-                    bufferBuilder.vertex(matrix4f, f12 + f17, f13 + f18, 0.0f).uv(f21, f22).color(f14, f15, f16, f6).endVertex();
-                    bufferBuilder.vertex(matrix4f, f12 + f17, f13 + 0.0f, 0.0f).uv(f21, f20).color(f14, f15, f16, f6).endVertex();
-                    bufferBuilder.vertex(matrix4f, f12 + 0.0f, f13 + 0.0f, 0.0f).uv(f19, f20).color(f14, f15, f16, f6).endVertex();
+
+            for (ResourceLocation var48 : this.glyphPageMap.keySet()) {
+                RenderSystem.setShaderTexture(0, var48);
+                List<GlyphEntry> var50 = this.glyphPageMap.get(var48);
+                Tesselator var52 = Tesselator.getInstance();
+                BufferBuilder var28 = var52.getBuilder();
+                var28.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+
+                for (GlyphEntry var29 : var50) {
+                    float var30 = var29.atX;
+                    float var31 = var29.atY;
+                    float var32 = var29.r;
+                    float var33 = var29.g;
+                    float var34 = var29.b;
+                    Glyph var35 = var29.toDraw;
+                    GlyphPage var36 = var35.owner();
+                    float var37 = var35.width();
+                    float var38 = var35.height();
+                    float var39 = (float) var35.u() / var36.imageWidth;
+                    float var40 = (float) var35.v() / var36.imageHeight;
+                    float var41 = (float) (var35.u() + var35.width()) / var36.imageWidth;
+                    float var42 = (float) (var35.v() + var35.height()) / var36.imageHeight;
+                    var28.vertex(var16, var30 + 0.0F, var31 + var38, 0.0F).uv(var39, var42).color(var32, var33, var34, var8).endVertex();
+                    var28.vertex(var16, var30 + var37, var31 + var38, 0.0F).uv(var41, var42).color(var32, var33, var34, var8).endVertex();
+                    var28.vertex(var16, var30 + var37, var31 + 0.0F, 0.0F).uv(var41, var40).color(var32, var33, var34, var8).endVertex();
+                    var28.vertex(var16, var30 + 0.0F, var31 + 0.0F, 0.0F).uv(var39, var40).color(var32, var33, var34, var8).endVertex();
                 }
-                tesselator.end();
+
+                var52.end();
             }
+
             this.glyphPageMap.clear();
         }
-        poseStack.popPose();
+
+        var1.popPose();
         RenderSystem.disableBlend();
     }
 

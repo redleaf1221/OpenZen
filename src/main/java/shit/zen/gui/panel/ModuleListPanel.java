@@ -5,13 +5,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import net.minecraft.client.gui.GuiGraphics;
 import shit.zen.ClientBase;
 import shit.zen.ZenClient;
 import shit.zen.gui.PanelClickGui;
-import shit.zen.gui.panel.ModuleListPanel.AnimationState;
 import shit.zen.modules.Category;
 import shit.zen.modules.Module;
 import shit.zen.render.DrawContext;
@@ -338,11 +336,11 @@ extends ClientBase {
                 if (n5 == 0) {
                     module.toggle();
                     String string = module.isEnabled() ? "On" : "Off";
-                    PanelClickGui.Đ.addToast(module.getName() + " Module " + string);
+                    PanelClickGui.panelClickGui.addToast(module.getName() + " Module " + string);
                 } else if (n5 == 1) {
                     this.hoveredModule = module;
                 } else if (n5 == 2) {
-                    PanelClickGui.Đ.selectModule(module);
+                    PanelClickGui.panelClickGui.selectModule(module);
                 }
                 return true;
             }

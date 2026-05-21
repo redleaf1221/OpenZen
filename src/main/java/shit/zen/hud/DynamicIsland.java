@@ -7,7 +7,6 @@ import java.util.List;
 import net.minecraft.util.Mth;
 import shit.zen.ClientBase;
 import shit.zen.event.impl.Render2DEvent;
-import shit.zen.render.DrawContext;
 import shit.zen.render.Paint;
 import shit.zen.render.Renderer;
 import shit.zen.render.RoundedRectangle;
@@ -22,7 +21,7 @@ public class DynamicIsland {
             this.owner = owner;
         }
 
-        public IHudElement Đ() {
+        public IHudElement visible() {
             for (IHudElement element : this.owner.elements) {
                 if (element.isVisible()) return element;
             }
@@ -43,7 +42,7 @@ public class DynamicIsland {
     public void onRender2D(Render2DEvent render2DEvent) {
         float f;
         float f2;
-        IHudElement.Size iHudElement$Size;
+        IHudElement.Size size;
         if (ClientBase.mc.player == null) {
             return;
         }
@@ -54,27 +53,27 @@ public class DynamicIsland {
         float f3 = (float)(l - this.lastFrameTimestamp) / 1000.0f;
         this.lastFrameTimestamp = l;
         f3 = Math.min(f3, 0.033333335f);
-        IHudElement iHudElement = this.activeElementSelector.Đ();
+        IHudElement iHudElement = this.activeElementSelector.visible();
         if (this.activeElement != iHudElement) {
             this.outgoingElement = this.activeElement;
             this.activeElement = iHudElement;
             this.transitionAnim.reset(0.0f);
             this.transitionAnim.setTargetValue(1.0f);
             if (this.outgoingElement == null) {
-                iHudElement$Size = this.activeElement.getHudAlignment();
-                this.widthAnim.reset(iHudElement$Size.width());
-                this.heightAnim.reset(iHudElement$Size.height());
+                size = this.activeElement.getHudAlignment();
+                this.widthAnim.reset(size.width());
+                this.heightAnim.reset(size.height());
                 this.transitionAnim.reset(1.0f);
             }
         }
-        iHudElement$Size = this.activeElement.getHudAlignment();
-        float f4 = iHudElement$Size.width();
-        float f5 = iHudElement$Size.height();
+        size = this.activeElement.getHudAlignment();
+        float f4 = size.width();
+        float f5 = size.height();
         float f6 = this.transitionAnim.getValue();
         if (this.outgoingElement != null && f6 < 1.0f) {
             IHudElement.Size iHudElement$Size2 = this.outgoingElement.getHudAlignment();
-            f4 = Mth.lerp(f6, iHudElement$Size2.width(), iHudElement$Size.width());
-            f5 = Mth.lerp(f6, iHudElement$Size2.height(), iHudElement$Size.height());
+            f4 = Mth.lerp(f6, iHudElement$Size2.width(), size.width());
+            f5 = Mth.lerp(f6, iHudElement$Size2.height(), size.height());
         }
         this.widthAnim.setTargetValue(f4);
         this.heightAnim.setTargetValue(f5);

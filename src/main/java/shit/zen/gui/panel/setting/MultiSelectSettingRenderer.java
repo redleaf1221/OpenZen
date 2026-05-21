@@ -91,7 +91,7 @@ implements SettingRenderer {
                     multiSelectSetting.getValue().add(string);
                 }
                 boolean bl = multiSelectSetting.isSelected(string);
-                PanelClickGui.Đ.addToast(string + (bl ? " enabled" : " disabled"));
+                PanelClickGui.panelClickGui.addToast(string + (bl ? " enabled" : " disabled"));
                 return true;
             }
             n7 += n8;

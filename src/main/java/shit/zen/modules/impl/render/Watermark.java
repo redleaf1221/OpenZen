@@ -23,7 +23,7 @@ public class Watermark extends Module {
         if (!this.isEnabled()) {
             return;
         }
-        switch ((String) this.styleSetting.getValue()) {
+        switch (this.styleSetting.getValue()) {
             case "Neverlose":
                 this.neverloseWatermark.onRender2D(render2DEvent);
                 break;

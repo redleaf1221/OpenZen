@@ -1,14 +1,13 @@
 package shit.zen.gui.panel;
 
 import java.awt.Color;
-import java.util.function.Consumer;
+
 import net.minecraft.client.gui.GuiGraphics;
 import shit.zen.ClientBase;
 import shit.zen.ZenClient;
 import shit.zen.gui.PanelClickGui;
 import shit.zen.modules.KeyBind;
 import shit.zen.modules.Module;
-import shit.zen.render.DrawContext;
 import shit.zen.render.FontPresets;
 import shit.zen.render.FontRenderer;
 import shit.zen.render.GlHelper;
@@ -71,7 +70,7 @@ extends ClientBase {
                 if (ZenClient.isReady()) {
                     ZenClient.instance.getConfigManager().saveAll();
                 }
-                PanelClickGui.Đ.addToast(this.targetModule.getName() + " keybind cleared");
+                PanelClickGui.panelClickGui.addToast(this.targetModule.getName() + " keybind cleared");
             }
             this.cancel();
             return true;
@@ -83,7 +82,7 @@ extends ClientBase {
             }
             KeyBind keyBind = new KeyBind(n);
             String string = keyBind.getName();
-            PanelClickGui.Đ.addToast(this.targetModule.getName() + " bound to " + string.toUpperCase());
+            PanelClickGui.panelClickGui.addToast(this.targetModule.getName() + " bound to " + string.toUpperCase());
             this.cancel();
             return true;
         }

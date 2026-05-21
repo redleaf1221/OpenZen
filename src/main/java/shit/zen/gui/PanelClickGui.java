@@ -52,7 +52,7 @@ extends Screen {
         }
     }
 
-    public static PanelClickGui Đ;
+    public static PanelClickGui panelClickGui = new PanelClickGui();
 
     private boolean searchActive = false;
     private boolean searchFocused = false;

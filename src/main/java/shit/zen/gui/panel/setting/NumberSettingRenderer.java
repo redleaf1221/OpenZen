@@ -152,9 +152,9 @@ implements SettingRenderer {
             double d3 = editingNumberSetting.getMax().doubleValue();
             d = Math.max(d2, Math.min(d3, d));
             NumberSettingRenderer.applyValueStatic(editingNumberSetting, d);
-            PanelClickGui.Đ.addToast(editingNumberSetting.getName() + " set to " + String.format(Locale.US, "%.1f", new Object[]{d}));
+            PanelClickGui.panelClickGui.addToast(editingNumberSetting.getName() + " set to " + String.format(Locale.US, "%.1f", new Object[]{d}));
         } catch (NumberFormatException numberFormatException) {
-            PanelClickGui.Đ.addToast("Invalid input, edit cancelled");
+            PanelClickGui.panelClickGui.addToast("Invalid input, edit cancelled");
         }
         NumberSettingRenderer.cancelEdit();
     }
@@ -247,7 +247,7 @@ implements SettingRenderer {
         double d3 = numberSetting.getMax().doubleValue();
         double d4 = Math.min(d3, d + d2);
         this.applyValue(numberSetting, d4);
-        PanelClickGui.Đ.addToast(numberSetting.getName() + " set to " + this.formatValue(d4));
+        PanelClickGui.panelClickGui.addToast(numberSetting.getName() + " set to " + this.formatValue(d4));
     }
 
     private void decrementValue(NumberSetting numberSetting) {
@@ -256,7 +256,7 @@ implements SettingRenderer {
         double d3 = numberSetting.getMin().doubleValue();
         double d4 = Math.max(d3, d - d2);
         this.applyValue(numberSetting, d4);
-        PanelClickGui.Đ.addToast(numberSetting.getName() + " set to " + this.formatValue(d4));
+        PanelClickGui.panelClickGui.addToast(numberSetting.getName() + " set to " + this.formatValue(d4));
     }
 
     private void applyValue(NumberSetting numberSetting, double d) {

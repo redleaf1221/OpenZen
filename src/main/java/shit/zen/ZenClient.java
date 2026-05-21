@@ -9,6 +9,8 @@ import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.Mod;
 import shit.zen.event.EventBus;
+import shit.zen.event.EventTarget;
+import shit.zen.event.impl.TickEvent;
 import shit.zen.manager.CommandManager;
 import shit.zen.manager.ConfigManager;
 import shit.zen.manager.HudManager;
@@ -84,7 +86,6 @@ public class ZenClient extends ClientBase {
             this.rotationHandler = new RotationHandler();
             this.eventBus.register(this.rotationHandler);
             this.moduleManager = new ModuleManager();
-            this.moduleManager.initModules();
             this.hudManager = new HudManager();
             this.commandManager = new CommandManager();
             this.commandManager.initCommands();
@@ -94,6 +95,7 @@ public class ZenClient extends ClientBase {
             this.eventBus.register(this.lagManager);
             this.targetManager = new TargetManager();
             this.eventBus.register(this.targetManager);
+            this.eventBus.register(this);
             this.encryption = new Encryption(Encryption.Algorithm.AES);
             registerPatches();
             if (PatchAgent.getInstrumentation() != null) {
@@ -108,6 +110,16 @@ public class ZenClient extends ClientBase {
         }
     }
 
+    private boolean moduleInit = false;
+
+    @EventTarget
+    public void onTick(TickEvent e) {
+        if (isReady() && !moduleInit) {
+            moduleInit = true;
+            this.moduleManager.initModules();
+        }
+    }
+
     public static boolean isReady() {
         return instance != null
                 && ZenClient.instance.eventBus != null
@@ -118,12 +130,8 @@ public class ZenClient extends ClientBase {
                 && mc.player.tickCount > 5;
     }
 
-    public static boolean isOwner(String string) {
+    public static boolean isOwner(String username) {
         return false;
-    }
-
-    public static String decodeString(String s) {
-        return s;
     }
 
     public void disconnectFromServer() {

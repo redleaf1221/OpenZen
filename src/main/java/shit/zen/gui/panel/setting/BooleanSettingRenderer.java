@@ -132,7 +132,7 @@ implements SettingRenderer {
             boolean bl = booleanSetting.getValue() == false;
             booleanSetting.setValue(bl);
             String string = bl ? "On" : "Off";
-            PanelClickGui.Đ.addToast(booleanSetting.getName() + " is " + string);
+            PanelClickGui.panelClickGui.addToast(booleanSetting.getName() + " is " + string);
             return true;
         }
         return false;

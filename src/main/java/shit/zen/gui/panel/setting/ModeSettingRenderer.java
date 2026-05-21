@@ -147,7 +147,7 @@ implements SettingRenderer {
                 String string2 = stringArray[i];
                 modeSetting.setValue(string2);
                 this.openStates.put(modeSetting, false);
-                PanelClickGui.Đ.addToast(modeSetting.getName() + " set to " + string2);
+                PanelClickGui.panelClickGui.addToast(modeSetting.getName() + " set to " + string2);
                 return true;
             }
             if (!bl2) {
